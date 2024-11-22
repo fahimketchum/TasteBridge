@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe List</title>
+        {% include 'dist/include_assets.html' %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .recipe-card {
+            height: 200px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            transition: all 0.3s ease;
+        }
+
+        .recipe-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-card .text-content {
+            flex: 1;
+            padding-right: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Space out the text evenly */
+        }
+
+        .recipe-card h2 {
+            margin-top: 0px;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .recipe-card p {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .recipe-card .rating {
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .recipe-card img {
+            width: 200px;
+            height: 100%; /* Fill the height of the container */
+            object-fit: cover;
+            border-radius: 8px;
+            margin-left: 20px;
+        }
+
+        .empty-message {
+            text-align: center;
+            font-size: 18px;
+            color: #777;
+            margin-top: 30px;
+        }
+
+        hr {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .search-bar {
+            width: 25%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .no-recipes-message {
+    padding: 20px;
+    border: 2px dashed #ffc107; /* Dotted border to emphasize the message */
+    background-color: #fff9e6; /* Soft yellow background */
+    color: #856404; /* Dark yellowish color for text */
+    text-align: center;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.no-recipes-message p {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.no-recipes-button {
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.no-recipes-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Header with Back Button and Title -->
+    <div class="container mt-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-light">
+                <i class="bi bi-arrow-left-circle"></i> Back
+            </a>
+                <h3 class="text-center flex-grow-1">{{ title }}</h3>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{% url 'dashboard' %}" class="btn btn-light" style="    visibility: hidden;">
+                <i class="bi bi-arrow-left-circle"></i> Back
+            </a>
+                <p class="text-center flex-grow-1 text-muted" style="font-size: 1rem;">Browse delicious recipes</p>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+
+    <div class="container" id="recipes-container">
+ <div style="text-align: right;">
+    <input type="text" id="search-bar" class="search-bar" placeholder="Search recipes..." oninput="filterRecipes()">
+</div>
+
+        {% for recipe in recipes %}
+        <a href="{% url 'recipe_detail' recipe.RecipeId %}" class="recipe-link" style="text-decoration: none;">
+            <div class="recipe-card" data-recipe-name="{{ recipe.RecipeName|lower }}" data-origin="{{ recipe.Origin|lower }}" data-ingredients="{{ recipe.Ingredients|lower }}" data-duration="{{ recipe.duration|lower }}">
+                <div class="text-content">
+                    <h2>{{ recipe.RecipeName }}</h2>
+                    <p><strong>Origin:</strong> {{ recipe.Origin }}</p>
+                    <p><strong>Ingredients:</strong> {{ recipe.Ingredients }}</p>
+                    <p><strong>Duration:</strong> {{ recipe.duration }}</p>
+                    <p><strong>Uploaded by:</strong> {{ recipe.user }}</p>
+
+                    <p class="rating"><strong>Rating:</strong> {{ recipe.rating }}</p>
+                </div>
+                {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.RecipeName }}">
+                {% endif %}
+            </div></a>
+        {% empty %}
+            <p class="empty-message">No recipes available.</p>
+            {% if msg %}
+        <br>
+                <div class="alert alert-warning no-recipes-message">
+                    <p>{{ msg }}</p><br>
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
+                </div>
+            {% endif %}
+
+    </div>
+        {% endfor %}
+    </div>
+
+    <script>
+
+ function filterRecipes() {
+    var searchTerm = document.getElementById("search-bar").value.toLowerCase();
+    var recipes = document.querySelectorAll(".recipe-card");
+    var matchFound = false;  // Track if any recipe matches
+
+    recipes.forEach(function(recipe, index) {
+        var recipeName = recipe.getAttribute("data-recipe-name").toLowerCase();
+        var origin = recipe.getAttribute("data-origin").toLowerCase();
+        var ingredients = recipe.getAttribute("data-ingredients").toLowerCase();
+        var duration = recipe.getAttribute("data-duration").toLowerCase();
+
+        // Check if the search term matches any of the recipe fields
+        if (
+            recipeName.includes(searchTerm) ||
+            origin.includes(searchTerm) ||
+            ingredients.includes(searchTerm) ||
+            duration.includes(searchTerm)
+        ) {
+            recipe.style.display = "flex";  // Show recipe
+            matchFound = true;  // Set match found to true
+        } else {
+            recipe.style.display = "none";  // Hide recipe
+        }
+    });
+
+    // If no matches are found, display the first (top-rated) recipe
+    if (!matchFound && recipes.length > 0) {
+        recipes.forEach(function(recipe, index) {
+            recipe.style.display = index === 0 ? "flex" : "none";  // Show only the top-rated recipe
+        });
+    }
+}
+
+    </script>
+</body>
+</html>

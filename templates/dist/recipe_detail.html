@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ recipe.RecipeName }} - Recipe Details</title>
+    <style>
+        /* Additional styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover, .close:focus {
+            color: black;
+        }
+
+        /* Existing styles */
+        /* ... (existing styles from your code) ... */
+                body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .recipe-detail {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .recipe-detail img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .recipe-detail h2 {
+            margin-top: 0;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .recipe-detail p {
+            font-size: 18px;
+            color: #555;
+            margin: 10px 0;
+        }
+
+        .recipe-detail .rating {
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .comments-section {
+            margin-top: 30px;
+        }
+
+        .comment {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .comment p {
+            margin: 0;
+            color: #333;
+        }
+
+        .comment .user {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .like-section {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .like-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .like-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .like-count {
+            font-weight: bold;
+            margin-left: 10px;
+        }   .rate-count {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .comment-form {
+            margin-top: 20px;
+        }
+
+        .comment-input {
+            width: 80%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .submit-comment {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-comment:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recipe Details</h1>
+    <div class="container">
+        <div class="recipe-detail">
+            <div style="
+    display: flex;
+    justify-content: space-between;
+">
+                            <div class="text-content">
+            <h2>{{ recipe.RecipeName }}</h2>
+            <p><strong>Origin:</strong> {{ recipe.Origin }}</p>
+            <p><strong>Ingredients:</strong> {{ recipe.Ingredients }}</p>
+            <p><strong>Duration:</strong> {{ recipe.duration }}</p>
+            <p><strong>Uploaded by:</strong> {{ recipe.user }}</p>
+            <p><strong>Procedure:</strong> {{ recipe.Procedure }}</p>
+
+<!--            <p><strong>Rating:</strong> <span class="rating">{{ recipe.rating }}</span></p>-->
+ </div>
+            {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" alt="{{ recipe.RecipeName }}" style="    height: 250px;
+    width: 250px;">
+            {% endif %}
+            </div>
+            <!-- Like Section with Total Likes on the Left and Like Button on the Right -->
+ <div  class="rating-card" style="display: flex; align-items: center; padding: 10px 10px 10px 0px; background-color: #ffffff; border-radius: 8px; margin-top: 20px;">
+    <!-- Rating Section Text and Count -->
+    <span style="cursor: pointer; font-weight: bold; color: #333; font-size: 16px; ;">
+        Ratings
+    </span>
+    <span class="rate-count" style="font-size: 16px; font-weight: bold; color: #007bff; margin-right: 15px;">
+        {{ recipe.rating|default:0 }}
+    </span>
+
+    <div style="
+    display: flex;
+    width: 100%;
+    justify-content: end;
+">
+           <!-- Rating Input (1 to 5) -->
+    <div style="display: flex; align-items: center;margin-right: 20px;">
+        <label for="user-rating" style="font-size: 14px; margin-right: 10px;">Rate (1-5):</label>
+        <select id="user-rating" style="padding: 5px; font-size: 14px;">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+    </div>
+
+    <!-- Rate Button -->
+    <div style="text-align: right;">
+        <button class="rate-button" id="rate-button" onclick="rateRecipe()" style="padding: 8px 16px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Rate
+        </button>
+    </div>
+    </div>
+</div>
+
+              <!-- Like Section with Total Likes on the Left and Like Button on the Right -->
+            <div class="like-section">
+                <span  style="cursor:pointer;">Total Likes</span>
+                <span class="like-count">{{ recipe.likes|length }}</span>
+                <div style="width: 90%; text-align: right;">
+                    <button class="like-button" id="like-button" onclick="likeRecipe()">Like</button>
+                </div>
+            </div>
+                       <!-- Like Section with Total Likes on the Left and Like Button on the Right -->
+            <div class="like-section">
+                <button onclick="openModal()" class="like-button" style="cursor:pointer;">View Total Likes</button>
+<!--                <span class="like-count">{{ recipe.likes|length }}</span>-->
+<!--                <div style="width: 90%; text-align: right;">-->
+<!--                    <button class="like-button" id="like-button" onclick="likeRecipe()">Like</button>-->
+<!--                </div>-->
+            </div>
+                            <h3>Comments</h3>
+
+<div class="like-section" style="margin-top:0">
+                <button onclick="openComments()" class="like-button" style="cursor:pointer;">View Comments</button>
+<!--                <span class="like-count">{{ recipe.likes|length }}</span>-->
+<!--                <div style="width: 90%; text-align: right;">-->
+<!--                    <button class="like-button" id="like-button" onclick="likeRecipe()">Like</button>-->
+<!--                </div>-->
+            </div>
+            <!-- Comments Section -->
+            <div class="comments-section" style="display:none">
+
+
+                {% for comment in recipe.comments %}
+                    <div class="comment" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; ">
+    <p style="margin: 0; color: #007bff; font-weight: bold; font-size: 14px;">
+        {{ comment.user_id }}:
+    </p>
+    <p style="margin-top: 8px; color: #333; font-size: 16px; line-height: 1.5;">
+        {{ comment.content }}
+    </p>
+</div>
+                {% empty %}
+                    <p>No comments yet.</p>
+                {% endfor %}
+
+
+            </div>
+ <!-- Add Comment -->
+                <div class="comment-form" style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+">
+                    <input type="text" id="comment-input" class="comment-input" placeholder="Write a comment...">
+                    <button class="submit-comment" id="submit-comment" onclick="submitComment()">Leave Comment</button>
+                </div>
+<!--            <a href="{% url 'recipes' %}" class="back-link">Back to Recipe List</a>-->
+        </div>
+    </div>
+
+    <!-- Modal for showing users who liked the recipe -->
+    <div id="likesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>People who liked this recipe</h3>
+            <ul>
+                {% for user in recipe.likes %}
+                    <li>{{ user }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Handle Like functionality
+        function likeRecipe() {
+    var likeButton = document.getElementById('like-button');
+    var isLiked = likeButton.innerText === "Liked";
+
+    // Determine the action based on current state
+    var action = isLiked ? "unlike" : "like";
+
+    // Send a POST request to toggle the like status
+    fetch("{% url 'like_recipe' recipe.RecipeId %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ "action": action })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the like count
+            document.querySelector(".like-count").innerText = data.like_count;
+
+            // Toggle the button text
+            likeButton.innerText = isLiked ? "Like" : "Liked";
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+        // Open the modal
+        function openModal() {
+            document.getElementById('likesModal').style.display = "block";
+        }
+
+        // Close the modal
+        function closeModal() {
+            document.getElementById('likesModal').style.display = "none";
+        }
+
+        // Close the modal when clicking outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('likesModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+// Handle Comment submission
+function submitComment() {
+    var commentInput = document.getElementById('comment-input');
+    var commentText = commentInput.value;
+
+    if (!commentText) {
+        return;  // Do nothing if the comment is empty
+    }
+
+    fetch("{% url 'submit_comment' recipe.RecipeId %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ "text": commentText })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            var commentsSection = document.querySelector(".comments-section");
+            var newComment = document.createElement("div");
+            newComment.classList.add("comment");
+            newComment.style.cssText = "background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;";
+
+            newComment.innerHTML = `
+                <p style="margin: 0; color: #007bff; font-weight: bold; font-size: 14px;">
+                    ${data.user_id}:
+                </p>
+                <p style="margin-top: 8px; color: #333; font-size: 16px; line-height: 1.5;">
+                    ${data.comment}
+                </p>
+            `;
+            commentsSection.appendChild(newComment);
+            commentInput.value = '';  // Clear the comment input field
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+          function openComments() {
+        var commentsSection = document.querySelector(".comments-section");
+        var openCommentsButton = document.getElementById("openComments");
+
+        // Toggle the display style of the comments section
+        if (commentsSection.style.display === "none") {
+            commentsSection.style.display = "block";
+            openCommentsButton.innerText = "Hide Comments";
+        } else {
+            commentsSection.style.display = "none";
+            openCommentsButton.innerText = "Show Comments";
+        }
+    }
+
+        function rateRecipe() {
+    var rateButton = document.getElementById('rate-button');
+    rateButton.disabled = true;  // Disable the button
+    var userRating = document.getElementById('user-rating').value;
+
+    // Ensure a rating is selected
+    if (!userRating || userRating < 1 || userRating > 5) {
+        alert("Please select a valid rating between 1 and 5.");
+        return;
+    }
+
+    // Send a POST request to rate the recipe
+    fetch("{% url 'rate_recipe' recipe.RecipeId %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ "rating": userRating })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the rating count after successful response
+            document.querySelector(".rate-count").innerText = data.new_rating;
+        } else {
+            alert("Error rating recipe. Please try again.");
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+    </script>
+</body>
+</html>

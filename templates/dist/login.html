@@ -1,0 +1,253 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Recipe App</title>
+    {% include 'dist/include_assets.html' %}
+
+    <style>
+        .background-radial-gradient {
+            background-color: hsl(218, 41%, 15%);
+            background-image: radial-gradient(650px circle at 0% 0%, hsl(218, 41%, 35%) 15%, hsl(218, 41%, 30%) 35%, hsl(218, 41%, 20%) 75%, hsl(218, 41%, 19%) 80%, transparent 100%), radial-gradient(1250px circle at 100% 100%, hsl(218, 41%, 45%) 15%, hsl(218, 41%, 30%) 35%, hsl(218, 41%, 20%) 75%, hsl(218, 41%, 19%) 80%, transparent 100%);
+        }
+
+        #radius-shape-1 {
+            height: 220px;
+            width: 220px;
+            top: -60px;
+            left: -130px;
+            background: radial-gradient(#44006b, #ad1fff);
+            overflow: hidden;
+        }
+
+        #radius-shape-2 {
+            border-radius: 38% 62% 63% 37% / 70% 33% 67% 30%;
+            bottom: -60px;
+            right: -110px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(#44006b, #ad1fff);
+            overflow: hidden;
+        }
+
+        .bg-glass {
+            background-color: hsla(0, 0%, 100%, 0.9) !important;
+            backdrop-filter: saturate(200%) blur(25px);
+        }
+    </style>
+    <style>
+        body,
+        html {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body onload="">
+    {% csrf_token %}
+
+<section class="background-radial-gradient overflow-hidden" style="min-height: 100vh; overflow-y: auto;">
+
+        <div class="container px-3 px-md-3 text-center text-lg-start" style="height:100%;">
+            <div class="row gx-lg-5 align-items-center">
+                <div class="col-lg-7 mb-5 mb-lg-0" style="z-index: 10;padding-right: 50px">
+                    <h1 class="my-5 display-5 fw-bold ls-tight" style="color: hsl(218, 81%, 95%)">
+                        <br />
+                        <span style="color: hsl(218, 81%, 75%)">My Recipe App</span>
+                    </h1>
+                    <p class="mb-4 opacity-70" style="color: hsl(218, 81%, 85%)">
+                        Welcome to My Recipe App! </p>
+                    <p class="mb-4 opacity-70" style="color: hsl(218, 81%, 85%);text-align: justify;">
+                        My Recipe App is a user-friendly platform where users can explore and share diverse recipes, rate dishes, and add comments to foster a community around cooking. The app features an interactive rating system, displays user ratings for each recipe, and offers an easy way to like and comment, making it perfect for food enthusiasts looking to discover and enjoy new recipes.
+                    </p>
+                </div>
+
+                <div class="col-lg-5 mb -5 mb-lg-0 position-relative">
+                    <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+                    <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+
+                    <div class="card bg-glass" style="margin-top:10%">
+                        <div class="card-body py-5 px-md-5">
+
+<!--                            <h1 class="auth-title">Log in.</h1>-->
+<!--                            <br>-->
+                            <p class="auth-subtitle mb-4">Log in with your data.</p>
+
+                            <div>
+                                <div class="form-group position-relative has-icon-left mb-4">
+                                    <input type="text" class="form-control form-control-xl" id="username"
+                                        name="username" required placeholder="Username">
+                                    <div class="form-control-icon">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group position-relative has-icon-left mb-4">
+                                    <input type="password" class="form-control form-control-xl" id="password" required
+                                        name="password" placeholder="Password">
+                                    <div class="form-control-icon">
+                                        <i class="bi bi-shield-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="form-check form-check-lg d-flex align-items-end  mb-4">
+                                    <input class="form-check-input me-2" type="checkbox" onclick="myFunction();"
+                                        value="" id="flexCheckDefault">
+                                    <label class="form-check-label text-gray-600" for="flexCheckDefault">
+                                        Show Password
+                                    </label>
+                                </div>
+
+                                {% for msg in messages %}
+                                <div class="alert alert-danger">
+                                    {{msg}}
+
+                                </div>
+                                {% endfor %}
+                                {% with messages="" %}
+                                {% endwith %}
+
+
+                                <button id="btn-login" class="btn btn-primary btn-block btn-lg shadow-lg mt-3"
+                                    type="submit" onclick="submitData()">Log In</button>
+
+                            </div>
+                            <!-- New Signup Button -->
+                                    <p class="mt-4">Don't have an account?
+                                        <a href="/signup" class="btn btn-secondary btn-block btn-lg mt-3">Sign Up</a>
+                                    </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function submitData() {
+            if (document.getElementById('username').value == '') {
+                Toastify({
+                    text: 'Username is required',
+                    duration: 3000,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+
+
+                }).showToast();
+                return;
+            } else if (document.getElementById('password').value == '') {
+                Toastify({
+                    text: 'Password is required',
+                    duration: 3000,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+
+
+                }).showToast();
+                return;
+            }
+
+            var data = new FormData();
+            data.append("csrfmiddlewaretoken", "{{csrf_token}}");
+            data.append("username", document.getElementById('username').value);
+            data.append("password", document.getElementById('password').value);
+
+            // Get answer from the input element
+            // var username = document.getElementsByTagName("username").value;
+            // var password = document.getElementsByTagName("password").value;
+
+            // add the url over here where you want to submit form & challenge_id is also taken as a parameter.
+            var url = "/tryLogin";
+
+            $.ajax({
+                method: "POST",
+
+                url: url,
+                data: data,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data.url == '/dashboard') {
+
+                        window.open('/dashboard', '_self');
+                    } else {
+                        Toastify({
+                            text: data.msg,
+                            duration: 3000,
+                            close: true,
+                            gravity: "top", // `top` or `bottom`
+                            position: "right", // `left`, `center` or `right`
+                            stopOnFocus: true, // Prevents dismissing of toast on hover
+
+
+                        }).showToast();
+
+                    }
+                }
+            });
+        }
+    </script>
+    <script src={% static "assets/js/bootstrap.bundle.min.js" %}></script>
+
+    <script src={% static "assets/vendors/toastify/toastify.js" %}></script>
+    <script src={% static "assets/js/mazer.js" %}></script>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("password");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
+    <!-- <script>
+
+        function myFunction() {
+
+            if ("{{login_error_message}}") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: "{{login_error_message}}",
+                    confirmButtonText: "Ok",
+                }).then((value) => {
+
+                    if (value['isConfirmed'] == true) {
+                        document.forms["loginFrom"]["email"].value = ''
+                        document.forms["loginFrom"]["password"].value = ''
+
+                    }
+
+
+                })
+            }
+
+        }
+    </script> -->
+    <script>
+        // var form = document.getElementById("loginFrom");
+        // function handleForm(event) { event.preventDefault(); }
+        // form.addEventListener('submit', handleForm);
+        // document.querySelector('form').addEventListener('submit', (e) => {
+        //     const data = Object.fromEntries(new FormData(e.target).entries());
+        //     console.log(data)
+
+        // });
+    </script>
+
+
+</body>
+
+</html>

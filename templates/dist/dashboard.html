@@ -1,0 +1,139 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Recipe App</title>
+
+    {% include 'dist/include_assets.html' %}
+    <link rel="stylesheet" href="{% static 'assets/vendors/toastify/toastify.css' %}">
+</head>
+
+<body>
+    <div id="app">
+        <div id="sidebar" class="active">
+            <div class="sidebar-wrapper active">
+                <div class="sidebar-header">
+                    <div class="d-flex justify-content-between">
+                        <div class="logo">
+                            <a href="{% url 'dashboard' %}">
+                                <img src="{% static 'assets/images/logo/logo.jpeg' %}" style="height:110px;" alt="Logo">
+                            </a>
+                        </div>
+                        <div class="toggler">
+                            <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <div class="sidebar-menu">
+                    <ul class="menu">
+                        <li class="sidebar-title">Menu</li>
+
+                        <li class="sidebar-item">
+                            <a href="{% url 'dashboard' %}" class="sidebar-link">
+                                <i class="bi bi-grid-fill"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="{% url 'profile_view' %}" class="sidebar-link">
+                                <i class="bi bi-person-lines-fill"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a href="{% url 'logout' %}" class="sidebar-link">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main">
+            <!-- Page Header -->
+            <div class="page-heading">
+                <h3>Dashboard</h3>
+                <p class="text-subtitle text-muted">Welcome to your dashboard, where you can search and add recipes.</p>
+            </div>
+
+            <!-- Cards Section -->
+            <section id="recipe-actions">
+                <div class="row">
+                    <!-- Card 1: Search Recipes -->
+                    <div class="col-md-6">
+                        <div class="card" style="padding: 10px;">
+                            <div class="card-header">
+                                <h4 class="card-title">Search Recipes</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Search new recipes and eat healthy.</p>
+                                <a href="{% url 'recipes' %}" class="btn btn-primary">Search Recipes</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Add New Recipe -->
+                    <div class="col-md-6">
+                        <div class="card" style="padding: 10px;">
+                            <div class="card-header">
+                                <h4 class="card-title">Upload a New Recipe</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Share your own recipe with the community.</p>
+                                <a href="{% url 'add_recipe' %}" class="btn btn-success">Upload</a>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Card 2: My Recipe -->
+                    <div class="col-md-6">
+                        <div class="card" style="padding: 10px;">
+                            <div class="card-header">
+                                <h4 class="card-title">My Recipe</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Click here to view your Recipe</p>
+                                <a href="{% url 'my_recipe' %}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                      <div class="col-md-6">
+                        <div class="card" style="padding: 10px;">
+                            <div class="card-header">
+                                <h4 class="card-title">Liked Recipes</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Click here to view your liked recipes</p>
+                                <a href="{% url 'liked_recipe' %}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer>
+                <div class="footer clearfix mb-0 text-muted">
+                    <div class="float-start">
+                        <p>2024 &copy; Recipe Sharing App</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/js/mazer.js' %}"></script>
+</body>
+</html>
